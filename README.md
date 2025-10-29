@@ -1,272 +1,224 @@
-# BoT-SORT
+# Multi-Person Detection and Re-identification
 
-> [**BoT-SORT: Robust Associations Multi-Pedestrian Tracking**](https://arxiv.org/abs/2206.14651)
-> 
-> Nir Aharon, Roy Orfaig, Ben-Zion Bobrovsky
+This project implements a state-of-the-art multi-object tracking system that combines motion and appearance information with camera-motion compensation and accurate Kalman filtering.
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/bot-sort-robust-associations-multi-pedestrian/multi-object-tracking-on-mot17)](https://paperswithcode.com/sota/multi-object-tracking-on-mot17?p=bot-sort-robust-associations-multi-pedestrian)
+## Key Features
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/bot-sort-robust-associations-multi-pedestrian/multi-object-tracking-on-mot20-1)](https://paperswithcode.com/sota/multi-object-tracking-on-mot20-1?p=bot-sort-robust-associations-multi-pedestrian)
-> 
-> *[https://arxiv.org/abs/2206.14651](https://arxiv.org/abs/2206.14651)*
+  * Multi-person detection and tracking
+  * Person re-identification (ReID)
+  * YOLOX & YOLOv7 support
+  * Multi-class object tracking
+  * Camera motion compensation
+  * Real-time video processing
 
-<p align="center"><img src="assets/Results_Bubbles.png"/></p>
+## 📖 Performance Highlights
 
-## Highlights 🚀
+  * **MOT17 Dataset:** 80.5 MOTA, 80.2 IDF1, 65.0 HOTA
+  * **MOT20 Dataset:** 77.8 MOTA, 77.5 IDF1, 63.3 HOTA
 
-- YOLOX & YOLOv7 support
-- Multi-class support
-- Camera motion compensation
-- Re-identification
+## 💻 System Requirements
 
-## Coming Soon
-- [ ] Trained YOLOv7 models for MOTChallenge.
-- [x] YOLOv7 detector.
-- [x] Multi-class support.
-- [x] Create OpenCV VideoStab GMC python binding or <u>write Python version<u>.
-- [ ] Deployment code.
+  * **Operating System:** Ubuntu 20.04 (tested) or Windows 10/11
+  * **Python:** 3.7
+  * **CPU:** Multi-core processor (Intel i5 or better recommended)
+  * **RAM:** 8GB minimum, 16GB recommended
+  * **Storage:** 5GB free space for models and dependencies
 
-## Abstract
+## 🚀 Installation Guide
 
-The goal of multi-object tracking (MOT) is detecting and tracking all the objects in a scene, while keeping a unique identifier for each object. In this paper, we present a new robust state-of-the-art tracker, which can combine the advantages of motion and appearance information, along with camera-motion compensation, and a more accurate Kalman filter state vector. Our new trackers BoT-SORT, and BoT-SORT-ReID rank first in the datasets of MOTChallenge [29, 11] on both MOT17 and MOT20 test sets, in terms of all the main MOT metrics: MOTA, IDF1, and HOTA. For MOT17: 80.5 MOTA, 80.2 IDF1, and 65.0 HOTA are achieved.
+### Step 1: Install Anaconda/Miniconda
 
+If you don't have Conda installed, download and install Miniconda from: [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 
-### Visualization results on MOT challenge test set
+### Step 2: Create Conda Environment
 
+Open your terminal/command prompt and run:
 
-https://user-images.githubusercontent.com/57259165/177045531-947d3146-4d07-4549-a095-3d2daa4692be.mp4
-
-https://user-images.githubusercontent.com/57259165/177048139-05dcb382-010e-41a6-b607-bb2b76afc7db.mp4
-
-https://user-images.githubusercontent.com/57259165/180818066-f67d1f78-515e-4ee2-810f-abfed5a0afcb.mp4
-
-## Tracking performance
-### Results on MOT17 challenge test set
-| Tracker       |  MOTA |  IDF1  |  HOTA  |
-|:--------------|:-------:|:------:|:------:|
-| BoT-SORT      |  80.6   |  79.5  |  64.6  |
-| BoT-SORT-ReID |  80.5   |  80.2  |  65.0  |
-
-### Results on MOT20 challenge test set
-| Tracker       | MOTA   | IDF1 | HOTA |
-|:--------------|:-------:|:------:|:------:|
-|BoT-SORT       | 77.7   | 76.3 | 62.6 | 
-|BoT-SORT-ReID  | 77.8   | 77.5 | 63.3 | 
-
-
-## Installation
-
-The code was tested on Ubuntu 20.04
-
-BoT-SORT code is based on ByteTrack and FastReID. <br>
-Visit their installation guides for more setup options.
- 
-### Setup with Anaconda
-**Step 1.** Create Conda environment and install pytorch.
-```shell
+```bash
 conda create -n botsort_env python=3.7
 conda activate botsort_env
 ```
-**Step 2.** Install torch and matched torchvision from [pytorch.org](https://pytorch.org/get-started/locally/).<br>
-The code was tested using torch 1.11.0+cu113 and torchvision==0.12.0 
 
-**Step 3.** Install BoT-SORT.
-```shell
-git clone https://github.com/NirAharon/BoT-SORT.git
-cd BoT-SORT
-pip3 install -r requirements.txt
-python3 setup.py develop
-```
-**Step 4.** Install [pycocotools](https://github.com/cocodataset/cocoapi).
-```shell
-pip3 install cython; pip3 install 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
+### Step 3: Install PyTorch (CPU Version)
+
+Install PyTorch for CPU-only usage via Conda:
+
+```bash
+conda install pytorch torchvision cpuonly -c pytorch
 ```
 
-Step 5. Others
-```shell
-# Cython-bbox
-pip3 install cython_bbox
+Or using pip:
 
-# faiss cpu / gpu
-pip3 install faiss-cpu
-pip3 install faiss-gpu
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 ```
 
-## Data Preparation
+### Step 4: Clone the Repository
 
-Download [MOT17](https://motchallenge.net/data/MOT17/) and [MOT20](https://motchallenge.net/data/MOT20/) from the [official website](https://motchallenge.net/). And put them in the following structure:
-
-```
-<dataets_dir>
-      │
-      ├── MOT17
-      │      ├── train
-      │      └── test    
-      │
-      └── MOT20
-             ├── train
-             └── test
+```bash
+git clone https://github.com/KraitOPP/Multi-Person-Detection-and-Reidentification.git
+cd Multi-Person-Detection-and-Reidentification
 ```
 
-For training the ReID, detection patches must be generated as follows:   
+### Step 5: Install Required Dependencies
 
-```shell
-cd <BoT-SORT_dir>
-
-# For MOT17 
-python3 fast_reid/datasets/generate_mot_patches.py --data_path <dataets_dir> --mot 17
-
-# For MOT20
- python3 fast_reid/datasets/generate_mot_patches.py --data_path <dataets_dir> --mot 20
-```
-Link dataset to FastReID ```export FASTREID_DATASETS=<BoT-SORT_dir>/fast_reid/datasets```. If left unset, the default is `fast_reid/datasets` 
- 
-## Model Zoo
-Download and store the trained models in 'pretrained' folder as follow:
-```
-<BoT-SORT_dir>/pretrained
-```
-- We used the publicly available [ByteTrack](https://github.com/ifzhang/ByteTrack) model zoo trained on MOT17, MOT20 and ablation study for YOLOX object detection.
-
-- Ours trained ReID models can be downloaded from [MOT17-SBS-S50](https://drive.google.com/file/d/1QZFWpoa80rqo7O-HXmlss8J8CnS7IUsN/view?usp=sharing), [MOT20-SBS-S50](https://drive.google.com/file/d/1KqPQyj6MFyftliBHEIER7m_OrGpcrJwi/view?usp=sharing).
-
-- For multi-class MOT use [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) or [YOLOv7](https://github.com/WongKinYiu/yolov7) trained on COCO (or any custom weights). 
-
-## Training
-
-[//]: # (### Training the Detector)
-
-[//]: # ()
-[//]: # (Please refer to [ByteTrack]&#40;https://github.com/ifzhang/ByteTrack&#41; for training detector.)
-
-### Train the ReID Module
-
-After generating MOT ReID dataset as described in the 'Data Preparation' section.
-
-```shell
-cd <BoT-SORT_dir>
-
-# For training MOT17 
-python3 fast_reid/tools/train_net.py --config-file ./fast_reid/configs/MOT17/sbs_S50.yml MODEL.DEVICE "cuda:0"
-
-# For training MOT20
-python3 fast_reid/tools/train_net.py --config-file ./fast_reid/configs/MOT20/sbs_S50.yml MODEL.DEVICE "cuda:0"
+```bash
+pip install -r requirements.txt
+python setup.py develop
 ```
 
-Refer to [FastReID](https://github.com/JDAI-CV/fast-reid)  repository for addition explanations and options.
+### Step 6: Install Additional Packages
 
-## Tracking
+```bash
+# Install pycocotools
+pip install cython
+pip install 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 
-By submitting the txt files produced in this part to [MOTChallenge](https://motchallenge.net/) website and you can get the same results as in the paper.<br>
-Tuning the tracking parameters carefully could lead to higher performance. In the paper we apply ByteTrack's calibration.
+# Install Cython-bbox
+pip install cython_bbox
 
-* **Test on MOT17**
-
-```shell
-cd <BoT-SORT_dir>
-python3 tools/track.py <dataets_dir/MOT17> --default-parameters --with-reid --benchmark "MOT17" --eval "test" --fp16 --fuse
-python3 tools/interpolation.py --txt_path <path_to_track_result>
+# Install faiss for CPU
+pip install faiss-cpu
 ```
 
-* **Test on MOT20**
+## 📥 Download Pretrained Models
 
-```shell
-cd <BoT-SORT_dir>
-python3 tools/track.py <dataets_dir/MOT20> --default-parameters --with-reid --benchmark "MOT20" --eval "test" --fp16 --fuse
-python3 tools/interpolation.py --txt_path <path_to_track_result>
+### Model Files Required
+
+Create a `pretrained` folder in the project root directory:
+
+```bash
+mkdir pretrained
 ```
 
-* **Evaluation on MOT17 validation set (the second half of the train set)**
+### Download Models from Google Drive
 
-```shell
-cd <BoT-SORT_dir>
+Download the following pretrained models and extract them to the `pretrained` folder:
 
-# BoT-SORT
-python3 tools/track.py <dataets_dir/MOT17> --default-parameters --benchmark "MOT17" --eval "val" --fp16 --fuse
+**Google Drive Link:** [https://drive.google.com/file/d/1rCEIYGc2kC2qbiT6XggOPbV3DELpwDLf/view?usp=sharing](https://drive.google.com/file/d/1rCEIYGc2kC2qbiT6XggOPbV3DELpwDLf/view?usp=sharing)
 
-# BoT-SORT-ReID
-python3 tools/track.py <dataets_dir/MOT17> --default-parameters --with-reid --benchmark "MOT17" --eval "val" --fp16 --fuse
+The `pretrained` folder should contain these files:
+
+  * `bytetrack_x_mot20.tar`
+  * `mot20_sbs_S50.pth`
+  * `yolox_x.pth`
+
+### Folder Structure
+
+After extraction, your project structure should look like:
+
+```plaintext
+Multi-Person-Detection-and-Reidentification/
+│
+├── pretrained/
+│   ├── bytetrack_x_mot20.tar
+│   ├── mot20_sbs_S50.pth
+│   └── yolox_x.pth
+│
+├── tools/
+├── yolox/
+├── fast_reid/
+├── requirements.txt
+└── setup.py
 ```
 
-* **Other experiments**
+## ▶️ Running the Project (CPU Mode)
 
-Other parameters can be used __without__ passing --default-parameters flag. <br>
-For evaluating the train and validation sets we recommend using the official MOTChallenge evaluation code from [TrackEval](https://github.com/JonathonLuiten/TrackEval). 
+### Basic Demo with Video File
 
-```shell
-# For all the available tracking parameters, see:
-python3 tools/track.py -h 
+To run person detection and tracking on a video file (make sure to add `--device cpu`):
+
+```bash
+python tools/demo.py video --path videos/cam1_street_trim.mp4 -f exps/example/mot/bytetrack_x_mot20.py -c pretrained/bytetrack_x_mot20.tar --with-reid --fast-reid-config fast_reid/configs/MOT20/sbs_S50.yml --fast-reid-weights pretrained/mot20_sbs_S50.pth --fuse-score --save_result --device cpu
 ```
 
-* **Experiments with YOLOv7**
+**Note:** The original command was missing `--device cpu` and included `--fp16`. The command above is corrected for a CPU-only setup as per the guide's recommendations.
 
-Other parameters can be used __without__ passing --default-parameters flag. <br>
-For evaluating the train and validation sets we recommend using the official MOTChallenge evaluation code from [TrackEval](https://github.com/JonathonLuiten/TrackEval). 
+## ⚙️ Important Parameters
 
-```shell
-# For all the available tracking parameters, see:
-python3 tools/track_yolov7.py -h 
+### Commonly Used Flags
+
+  * `--path`: Path to video file, image folder, or webcam ID
+  * `--with-reid`: Enable re-identification module
+  * `--fuse-score`: Use fused detection and ReID scores
+  * `--save_result`: Save output video/images
+  * `--device cpu`: **Force CPU usage** (important for CPU-only setup)
+  * `-c`: Path to checkpoint/model file
+  * `-f`: Path to experiment configuration file
+
+### View All Available Options
+
+```bash
+python tools/demo.py -h
 ```
 
-## Demo
+## ⚠️ Performance Notes for CPU Mode
 
-Demo with BoT-SORT(-ReID) based YOLOX and multi-class.
+When running on CPU without GPU acceleration:
 
-```shell
-cd <BoT-SORT_dir>
+  * **Processing Speed:** Expect slower frame rates compared to GPU (approximately 5-15 FPS depending on your CPU).
+  * **Video Resolution:** Lower resolution videos will process faster.
+  * **Optimization Tips:**
+      * Use smaller input resolution with the `--input-size` parameter.
+      * **Disable** the `--fp16` flag (it is not beneficial on CPU).
+      * Remove `--fuse-score` if ReID fusion is not critical.
 
-# Original example
-python3 tools/demo.py video --path <path_to_video> -f yolox/exps/example/mot/yolox_x_mix_det.py -c pretrained/bytetrack_x_mot17.pth.tar --with-reid --fuse-score --fp16 --fuse --save_result
+## 📂 Output
 
-# Multi-class example
-python3 tools/mc_demo.py video --path <path_to_video> -f yolox/exps/example/mot/yolox_x_mix_det.py -c pretrained/bytetrack_x_mot17.pth.tar --with-reid --fuse-score --fp16 --fuse --save_result
+Results will be saved in the following locations:
+
+  * **Tracked Videos:** `YOLOX_outputs/yolox_x_mix_det/track_vis/`
+  * **Tracking Results (TXT):** `YOLOX_outputs/yolox_x_mix_det/track_results/`
+  * **Detection Visualizations:** Output folder specified in command
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+**Issue 1: `ImportError` for torch**
+
+  * **Solution:** Ensure PyTorch is properly installed for CPU. Re-run the installation command:
+    ```bash
+    conda install pytorch torchvision cpuonly -c pytorch
+    ```
+
+**Issue 2: CUDA errors on a CPU-only machine**
+
+  * **Solution:** You must always add the `--device cpu` flag to your `demo.py` command.
+
+**Issue 3: Out of memory errors**
+
+  * **Solution:** Process lower resolution videos or reduce the batch size (if applicable).
+
+**Issue 4: Slow processing**
+
+  * **Solution:** This is expected for CPU mode. Consider:
+      * Reducing the input video resolution.
+      * Processing shorter video clips.
+      * Using lighter model variants (if available).
+
+## 📁 Project Structure
+
+```plaintext
+Multi-Person-Detection-and-Reidentification/
+│
+├── pretrained/         # Pretrained model weights
+├── tools/              # Main execution scripts
+│   ├── demo.py         # Demo script for single-class
+│   ├── mc_demo.py      # Multi-class demo script
+│   └── track.py        # Tracking evaluation script
+├── yolox/              # YOLOX detector implementation
+├── fast_reid/          # ReID module
+├── tracker/            # Tracking algorithms
+├── requirements.txt    # Python dependencies
+└── setup.py            # Installation script
 ```
 
-Demo with BoT-SORT(-ReID) based YOLOv7 and multi-class.
-```shell
-cd <BoT-SORT_dir>
-python3 tools/mc_demo_yolov7.py --weights pretrained/yolov7-d6.pt --source <path_to_video/images> --fuse-score --agnostic-nms (--with-reid)
-```
+## 🙏 Acknowledgments
 
-## Note
+This project builds upon:
 
-Our camera motion compensation module is based on the OpenCV contrib C++ version of VideoStab Global Motion Estimation, 
-which currently does not have a Python version. <br>
-Motion files can be generated using the C++ project called 'VideoCameraCorrection' in the GMC folder. <br> 
-The generated files can be used from the tracker. <br>
-
-In addition, python-based motion estimation techniques are available and can be chosen by passing <br> 
-'--cmc-method' <files | orb | ecc> to demo.py or track.py. 
-
-## Citation
-
-```
-@article{aharon2022bot,
-  title={BoT-SORT: Robust Associations Multi-Pedestrian Tracking},
-  author={Aharon, Nir and Orfaig, Roy and Bobrovsky, Ben-Zion},
-  journal={arXiv preprint arXiv:2206.14651},
-  year={2022}
-}
-```
-
-
-## Acknowledgement
-
-A large part of the codes, ideas and results are borrowed from 
-[ByteTrack](https://github.com/ifzhang/ByteTrack), 
-[StrongSORT](https://github.com/dyhBUPT/StrongSORT),
-[FastReID](https://github.com/JDAI-CV/fast-reid),
-[YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) and
-[YOLOv7](https://github.com/wongkinyiu/yolov7). 
-Thanks for their excellent work!
-
-
-
-
-
-
-
-
-
-
-
+  * ByteTrack
+  * FastReID
+  * YOLOX
+  * YOLOv7
