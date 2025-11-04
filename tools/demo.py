@@ -5,6 +5,7 @@ import os.path as osp
 import time
 import cv2
 import torch
+import numpy as np
 
 from loguru import logger
 
@@ -67,7 +68,7 @@ def get_image_list(path):
     for maindir, subdir, file_name_list in os.walk(path):
         for filename in file_name_list:
             apath = osp.join(maindir, filename)
-            ext = osp.splitext(apath)[1]
+            ext = osp.splitext(apath)[1].lower()
             if ext in IMAGE_EXT:
                 image_names.append(apath)
     return image_names
@@ -144,6 +145,29 @@ class Predictor(object):
         return outputs, img_info
 
 
+def draw_person_count(img: np.ndarray, count: int, loc=(10, 10), box_size=(180, 40)):
+    """
+    Draws a filled rectangle and a text showing number of persons tracked.
+    loc: top-left coordinate of rectangle
+    box_size: (width, height) in pixels
+    """
+    x, y = loc
+    w, h = box_size
+    # Ensure integers
+    x, y, w, h = int(x), int(y), int(w), int(h)
+    # Make rectangle
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 0), thickness=-1)  # filled black box
+    text = f"Persons: {count}"
+    # Put white text
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 0.9
+    thickness = 2
+    text_size, _ = cv2.getTextSize(text, font, font_scale, thickness)
+    text_x = x + 10
+    text_y = y + (h + text_size[1]) // 2
+    cv2.putText(img, text, (text_x, text_y), font, font_scale, (255, 255, 255), thickness, cv2.LINE_AA)
+
+
 def image_demo(predictor, vis_folder, current_time, args):
     if osp.isdir(args.path):
         files = get_image_list(args.path)
@@ -190,9 +214,14 @@ def image_demo(predictor, vis_folder, current_time, args):
             online_im = plot_tracking(
                 img_info['raw_img'], online_tlwhs, online_ids, frame_id=frame_id, fps=1. / timer.average_time
             )
+            # Draw the person count overlay (only tracked persons)
+            person_count = len(online_ids)
+            draw_person_count(online_im, person_count)
         else:
             timer.toc()
             online_im = img_info['raw_img']
+            # If no detections/tracks, show count = 0
+            draw_person_count(online_im, 0)
 
         # result_image = predictor.visual(outputs[0], img_info, predictor.confthre)
         if args.save_result:
@@ -229,7 +258,7 @@ def imageflow_demo(predictor, vis_folder, current_time, args):
         save_path = osp.join(save_folder, "camera.mp4")
     logger.info(f"video save_path is {save_path}")
     vid_writer = cv2.VideoWriter(
-        save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (int(width), int(height))
+        save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps if fps > 0 else args.fps, (int(width), int(height))
     )
     tracker = BoTSORT(args, frame_rate=args.fps)
     timer = Timer()
@@ -270,9 +299,14 @@ def imageflow_demo(predictor, vis_folder, current_time, args):
                 online_im = plot_tracking(
                     img_info['raw_img'], online_tlwhs, online_ids, frame_id=frame_id + 1, fps=1. / timer.average_time
                 )
+                # Draw person count overlay (only tracked persons)
+                person_count = len(online_ids)
+                draw_person_count(online_im, person_count)
             else:
                 timer.toc()
                 online_im = img_info['raw_img']
+                draw_person_count(online_im, 0)
+
             if args.save_result:
                 vid_writer.write(online_im)
             ch = cv2.waitKey(1)
