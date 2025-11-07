@@ -1,5 +1,5 @@
 conda activate botsort_env   
 
-python tools/demo.py video --path videos/palace.mp4 -f exps/example/mot/bytetrack_x_mot20.py -c pretrained/bytetrack_x_mot20.tar --with-reid --fast-reid-config fast_reid/configs/MOT20/sbs_S50.yml --fast-reid-weights pretrained/mot20_sbs_S50.pth --fuse-score --fp16 --save_result
+python tools/demo.py video --path videos/t2.mp4 -f exps/example/mot/bytetrack_x_mot20.py -c pretrained/bytetrack_x_mot20.tar --with-reid --fast-reid-config fast_reid/configs/MOT20/sbs_S50.yml --fast-reid-weights pretrained/mot20_sbs_S50.pth --fuse-score --fp16 --save_result
 
 --own video
